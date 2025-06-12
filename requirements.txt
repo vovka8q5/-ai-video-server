@@ -1,0 +1,10 @@
+yt-dlp
+ffmpeg-python
+requests
+beautifulsoup4
+selenium
+openai
+python-dotenv
+google-api-python-client
+google-auth
+google-auth-oauthlib
