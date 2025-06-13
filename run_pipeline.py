@@ -8,15 +8,15 @@ from scripts.subtitle_generator import generate_subtitles
 from uploader.upload_youtube import upload_to_youtube
 
 def run_full_pipeline(video_url: str, style: str = "anime"):
-    print(f"🚀 Загружаем видео: {video_url}")
+    print(f"🚀 Обработка видео: {video_url}")
     video_path = download_from_youtube(video_url)
-    print(f"📼 Скачано: {video_path}")
+    print("📼 Скачано:", video_path)
 
     short_path = convert_to_shorts_format(video_path)
-    print(f"✂️ Отформатировано: {short_path}")
+    print("✂️ Отформатировано:", short_path)
 
     stylized_path = apply_ai_style(short_path, style)
-    print(f"🎨 Стилизация готова: {stylized_path}")
+    print("🎨 Стилизация готова:", stylized_path)
 
     generate_subtitles(stylized_path)
     print("💬 Субтитры добавлены")
