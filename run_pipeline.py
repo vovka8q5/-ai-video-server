@@ -1,5 +1,6 @@
 import os
 
+
 os.makedirs("input/raw_videos", exist_ok=True)
 os.makedirs("output/shorts_ready", exist_ok=True)
 os.makedirs("stylized", exist_ok=True)
