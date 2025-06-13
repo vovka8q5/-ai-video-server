@@ -1,3 +1,4 @@
+openai-whisper
 yt-dlp
 ffmpeg-python
 requests
@@ -8,3 +9,5 @@ python-dotenv
 google-api-python-client
 google-auth
 google-auth-oauthlib
+moviepy
+bs4
