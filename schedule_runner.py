@@ -1,20 +1,21 @@
+# schedule_runner.py
 
-import time
 import schedule
-from run_pipeline import run_auto_trending_pipeline
+import time
+import subprocess
 
 def job():
-    print("📅 Расписание: Запуск авто-тренд пайплайна")
-    run_auto_trending_pipeline()
+    print("🚀 Старт задачи: run_pipeline.py")
+    subprocess.run(["python", "run_pipeline.py"])
 
-# Запускаем каждый день в 00:00, 06:00, 12:00, 18:00
+# Расписание: 4 раза в сутки (UTC)
 schedule.every().day.at("00:00").do(job)
 schedule.every().day.at("06:00").do(job)
 schedule.every().day.at("12:00").do(job)
 schedule.every().day.at("18:00").do(job)
 
-print("✅ Расписание активировано. Ожидаем время запуска...")
+print("⏳ Ожидание времени запуска...")
 
 while True:
     schedule.run_pending()
-    time.sleep(60)
+    time.sleep(30)
