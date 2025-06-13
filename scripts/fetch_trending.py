@@ -3,7 +3,7 @@ def get_trending_video_urls(count=3):
 
     print("📡 Получаем тренды YouTube через API...")
 
-    API_KEY = "AIzaSyBuxUP_idr_uRERpICC0kc5BEAcym4inCQ"
+    API_KEY = ""
     url = (
         f"https://www.googleapis.com/youtube/v3/videos"
         f"?part=snippet&chart=mostPopular&regionCode=US&maxResults={count}&key={API_KEY}"
