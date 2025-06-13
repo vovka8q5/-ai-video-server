@@ -1,3 +1,9 @@
+import os
+
+os.makedirs("input/raw_videos", exist_ok=True)
+os.makedirs("output/shorts_ready", exist_ok=True)
+os.makedirs("stylized", exist_ok=True)
+
 from scripts.download_video import download_from_youtube
 from scripts.preprocess_video import convert_to_shorts_format
 from scripts.stylize_video import apply_ai_style
