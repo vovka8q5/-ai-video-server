@@ -10,6 +10,11 @@ from scripts.stylize_video import apply_ai_style
 from scripts.subtitle_generator import generate_subtitles
 from uploader.upload_youtube import upload_to_youtube
 from scripts.fetch_trending import get_trending_video_urls
+from scripts.subtitle_generator_faster import generate_subtitles
+
+# Вызов после стилизации видео
+generate_subtitles(stylized_path)
+
 
 def run_full_pipeline(video_url: str, style: str = "anime"):
     video_path = download_from_youtube(video_url)
