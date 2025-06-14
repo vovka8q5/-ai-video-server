@@ -5,7 +5,8 @@ from datetime import datetime
 from notifier import send_message
 
 # ⏰ Время запуска в формате UTC
-SCHEDULE = ["00:00", "06:00", "12:00", "18:00"]
+SCHEDULE = ["19:30"]  # Вставь ближайшее UTC-время
+
 PIPELINE_COMMAND = ["python", "run_pipeline.py"]
 
 def get_current_time():
