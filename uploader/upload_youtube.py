@@ -8,7 +8,7 @@ def upload_to_youtube(video_path: str):
     SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
     # Путь к секретному файлу
-    CLIENT_SECRETS_FILE = "/etc/secrets/client_secrets.json"
+    CLIENT_SECRETS_FILE = os.getenv("YT_CLIENT_SECRETS_PATH", "client_secrets.json")
 
     creds = None
     if os.path.exists("token.pickle"):
