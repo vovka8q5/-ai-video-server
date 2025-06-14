@@ -1,59 +1,52 @@
-# schedule_runner.py (тестовая версия)
 import schedule
 import time
 import subprocess
 from notifier import send_message
 from datetime import datetime, timezone
 
-# ТЕСТОВОЕ РАСПИСАНИЕ (только 00:00 UTC)
-SCHEDULE_TIMES = ["20:52"]  # Только одно время для теста
-# SCHEDULE_TIMES = ["00:00", "06:00", "12:00", "18:00"]  # Оригинальное расписание (закомментировано)
-
+SCHEDULE_TIMES = ["21:03"]  # Тестовое время
 PIPELINE_COMMAND = ["python", "run_pipeline.py"]
 
 def run_pipeline_job():
-    current_time = datetime.now(timezone.utc).strftime("%H:%M")
-    print(f"⏰ Тестовый запуск пайплайна в {current_time} UTC")
-    
     try:
-        send_message(f"🧪 Тестовый запуск в {current_time} UTC")
-        
-        # Для теста можно добавить принудительную задержку
-        print("🔄 Имитация обработки видео (10 сек)...")
-        time.sleep(10)
+        print(f"\n🔴 [{datetime.now(timezone.utc)}] Запуск пайплайна...")
+        send_message("🔄 Начало обработки видео")
         
         result = subprocess.run(
             PIPELINE_COMMAND,
-            check=True,
-            capture_output=True,
-            text=True
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=1800,
+            check=True
         )
         
-        if result.returncode == 0:
-            send_message("✅ Тест успешен! Пайплайн работает")
-        else:
-            error_msg = result.stderr[:500]
-            send_message(f"❌ Тест не пройден:\n{error_msg}")
-
+        print(f"✅ Вывод пайплайна:\n{result.stdout.decode()}")
+        send_message("✅ Видео успешно обработано")
+        
+    except subprocess.TimeoutExpired:
+        error_msg = "❌ Пайплайн превысил 30-минутный лимит"
+        print(error_msg)
+        send_message(error_msg)
     except Exception as e:
-        send_message(f"🔥 Тестовая ошибка: {str(e)}")
+        error_msg = f"🔥 Ошибка: {str(e)}"
+        print(error_msg)
+        send_message(error_msg)
 
 def main():
-    send_message("🔧 Начат тестовый режим планировщика")
+    print(f"⏰ Серверное время UTC: {datetime.now(timezone.utc)}")
+    send_message("🚀 Планировщик активирован")
     
-    # Для теста можно добавить принудительный запуск
-    if datetime.now(timezone.utc).hour == 23:  # Если сейчас 23:00 UTC
-        print("🛠 Принудительный тестовый запуск")
-        run_pipeline_job()
-    
-    # Настройка расписания
     for time_str in SCHEDULE_TIMES:
         schedule.every().day.at(time_str).do(run_pipeline_job)
-        print(f"⏳ Тестовая задача на {time_str} UTC")
+        print(f"⏳ Запланирован запуск на {time_str} UTC")
 
     while True:
-        schedule.run_pending()
-        time.sleep(10)
+        try:
+            schedule.run_pending()
+            time.sleep(10)
+        except Exception as e:
+            print(f"🛑 Ошибка в основном цикле: {e}")
+            time.sleep(10)
 
 if __name__ == "__main__":
     main()
