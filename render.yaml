@@ -1,8 +1,7 @@
-# 📁 render.yaml
 services:
-  - type: web
-    name: ai-video-server
+  - type: worker  # Измените с 'web' на 'worker' для фоновых задач
+    name: ai-video-scheduler
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python run_pipeline.py
+    startCommand: python schedule_runner.py
     pythonVersion: 3.10.13
