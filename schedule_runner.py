@@ -4,7 +4,7 @@ import subprocess
 from notifier import send_message
 from datetime import datetime, timezone
 
-SCHEDULE_TIMES = ["20:06"]  # Тестовое время, потом замените на ["00:00", "06:00", "12:00", "18:00"]
+SCHEDULE_TIMES = ["20:35"]  # Тестовое время, потом замените на ["00:00", "06:00", "12:00", "18:00"]
 PIPELINE_COMMAND = ["python", "run_pipeline.py"]
 
 def run_pipeline_job():
