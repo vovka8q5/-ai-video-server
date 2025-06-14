@@ -1,51 +1,50 @@
-# schedule_runner.py
-
-import subprocess
 import time
-from datetime import datetime, timezone
+import subprocess
+import datetime
 
-# Время запуска (UTC): каждый день в 00:00, 06:00, 12:00, 18:00
+# Время в формате UTC — расписание загрузок
 SCHEDULED_TIMES = ["00:00", "06:00", "12:00", "18:00"]
 
-# Логи
-LOG_PREFIX = "[SCHEDULER]"
+LOG_FILE = "schedule_log.txt"
 
 def log(message):
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-    print(f"{LOG_PREFIX} {now} - {message}")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    entry = f"[{timestamp}] {message}"
+    print(entry)
+    try:
+        with open(LOG_FILE, "a") as f:
+            f.write(entry + "\n")
+    except Exception as e:
+        print(f"⚠️ Ошибка записи в лог: {e}")
 
-# Проверка, совпадает ли время
-def is_scheduled_time():
-    current_time = datetime.now(timezone.utc).strftime("%H:%M")
-    return current_time in SCHEDULED_TIMES
+def current_time_utc():
+    return datetime.datetime.utcnow().strftime("%H:%M")
 
 def run_pipeline():
-    log("Запуск run_pipeline.py...")
+    log("🚀 Запуск run_pipeline.py")
     try:
-        result = subprocess.run(["python", "run_pipeline.py"], capture_output=True, text=True, timeout=600)
-        log("Выполнено run_pipeline.py")
-        log(f"[OUTPUT]:\n{result.stdout}")
-        if result.stderr:
-            log(f"[ERROR]:\n{result.stderr}")
+        result = subprocess.run(["python", "run_pipeline.py"],
+                                capture_output=True, text=True, timeout=1800)
+        log("✅ STDOUT:\n" + result.stdout)
+        log("⚠️ STDERR:\n" + result.stderr)
     except subprocess.TimeoutExpired:
-        log("❌ Ошибка: run_pipeline.py превысил лимит времени")
-    except Exception as e:
-        log(f"❌ Непредвиденная ошибка: {e}")
+        log("❌ Таймаут выполнения run_pipeline.py")
 
 if __name__ == "__main__":
-    log("Запуск планировщика...")
+    log("🟢 schedule_runner запущен и ожидает расписание...")
+    already_ran = set()
+
     while True:
-        try:
-            if is_scheduled_time():
-                log("✅ Время совпадает с расписанием. Запуск...")
-                run_pipeline()
-                log("🕒 Засыпаем на 60 секунд, чтобы избежать повторного запуска...")
-                time.sleep(60)
-            else:
-                log("⏳ Пока не время. Ждём 15 секунд...")
-                time.sleep(15)
-        except KeyboardInterrupt:
-            log("⛔ Остановка по запросу пользователя")
-            break
-        except Exception as e:
-            log(f"❌ Ошибка в основном цикле: {e}")
+        now = current_time_utc()
+
+        if now in SCHEDULED_TIMES and now not in already_ran:
+            log(f"⏰ Время по расписанию: {now}")
+            run_pipeline()
+            already_ran.add(now)
+
+        # Очистка уже выполненных запусков на следующий день
+        if now == "00:01":
+            already_ran.clear()
+            log("🔁 Очистка списка уже выполненных времён")
+
+        time.sleep(10)  # Проверять каждые 10 секунд
