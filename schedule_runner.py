@@ -6,7 +6,7 @@ from notifier import send_message
 from datetime import datetime, timezone
 
 # ТЕСТОВОЕ РАСПИСАНИЕ (только 00:00 UTC)
-SCHEDULE_TIMES = ["20:46"]  # Только одно время для теста
+SCHEDULE_TIMES = ["20:52"]  # Только одно время для теста
 # SCHEDULE_TIMES = ["00:00", "06:00", "12:00", "18:00"]  # Оригинальное расписание (закомментировано)
 
 PIPELINE_COMMAND = ["python", "run_pipeline.py"]
@@ -53,7 +53,7 @@ def main():
 
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
