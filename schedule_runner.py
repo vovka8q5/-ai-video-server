@@ -1,49 +1,33 @@
+import schedule
 import time
 import subprocess
-from datetime import datetime, timezone
 from notifier import send_message
+from datetime import datetime, timezone
 
-SCHEDULE = ["20:06"]  # Формат: "HH:MM"
+SCHEDULE_TIMES = ["20:06"]  # Тестовое время, потом замените на ["00:00", "06:00", "12:00", "18:00"]
 PIPELINE_COMMAND = ["python", "run_pipeline.py"]
 
-def get_current_time():
-    return datetime.now(timezone.utc).strftime("%H:%M")
+def run_pipeline_job():
+    current_time = datetime.now(timezone.utc).strftime("%H:%M")
+    print(f"🚀 Запуск пайплайна в {current_time} UTC")
+    try:
+        send_message(f"🚀 Старт обработки видео в {current_time} UTC")
+        subprocess.run(PIPELINE_COMMAND, check=True)
+    except Exception as e:
+        print(f"❌ Ошибка: {str(e)}")
+        send_message(f"❌ Ошибка пайплайна: {str(e)}")
 
 def main():
     print("📡 Планировщик активирован...")
-    try:
-        send_message("📡 Планировщик запущен на сервере!")
-    except Exception as e:
-        print(f"⚠️ Не удалось отправить уведомление о запуске: {e}")
+    send_message("📡 Планировщик запущен на сервере!")
 
-    already_ran = set()
+    # Настраиваем расписание
+    for time_str in SCHEDULE_TIMES:
+        schedule.every().day.at(time_str).do(run_pipeline_job)
 
     while True:
-        current_time = get_current_time()
-        print(f"🕒 Текущее время UTC: {current_time}")
-
-        if current_time in SCHEDULE and current_time not in already_ran:
-            print(f"🚀 Запуск run_pipeline.py в {current_time}")
-            try:
-                send_message(f"🚀 Старт обработки видео в {current_time}")
-            except Exception as e:
-                print(f"⚠️ Не удалось отправить уведомление о старте: {e}")
-
-            try:
-                subprocess.run(PIPELINE_COMMAND, check=True)
-                already_ran.add(current_time)
-            except subprocess.CalledProcessError as e:
-                print(f"❌ Ошибка при запуске pipeline: {e}")
-                try:
-                    send_message(f"❌ Ошибка при запуске pipeline: {e}")
-                except Exception as tg_err:
-                    print(f"⚠️ Не удалось отправить уведомление об ошибке: {tg_err}")
-
-        # Сброс на следующий день
-        if datetime.now(timezone.utc).hour == 0 and datetime.now(timezone.utc).minute == 0:
-            already_ran.clear()
-
-        time.sleep(30)
+        schedule.run_pending()
+        time.sleep(60)  # Проверяем каждую минуту
 
 if __name__ == "__main__":
     main()
