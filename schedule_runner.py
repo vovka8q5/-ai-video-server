@@ -3,7 +3,7 @@ import subprocess
 from datetime import datetime, timezone
 from notifier import send_message
 
-SCHEDULE = ["19:55"]  # Формат: "HH:MM"
+SCHEDULE = ["20:06"]  # Формат: "HH:MM"
 PIPELINE_COMMAND = ["python", "run_pipeline.py"]
 
 def get_current_time():
