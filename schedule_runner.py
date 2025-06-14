@@ -21,7 +21,9 @@ def main():
     already_ran = set()
 
     while True:
-        current_time = datetime.utcnow().strftime("%H:%M")
+        from datetime import datetime, timezone
+        current_time = datetime.now(timezone.utc).strftime("%H:%M")
+
 
         if current_time in SCHEDULE and current_time not in already_ran:
             print(f"🚀 {current_time} — запуск run_pipeline.py")
