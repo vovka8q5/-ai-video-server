@@ -7,7 +7,7 @@ import logging
 from datetime import datetime, timezone
 
 # Конфигурация (можно менять)
-SCHEDULE_TIMES = ["21:28"]  # UTC время загрузки (3 раза в день)
+SCHEDULE_TIMES = ["20:38"]  # UTC время загрузки (3 раза в день)
 PIPELINE_SCRIPT = "run_pipeline.py"  # Ваш основной скрипт
 LOG_FILE = "/tmp/pipeline_scheduler.log"  # Логи будут доступны в Console
 
